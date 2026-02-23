@@ -19,7 +19,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
     //if data is coming from form or json you can get it from req.body
     const { fullName, email, username, password } = req.body
-    console.log( fullName, email, username, password )
+    // console.log( fullName, email, username, password )
 
     if(
         [fullName, email, username, password].some( (field) => field?.trim() === "")
@@ -32,9 +32,15 @@ const registerUser = asyncHandler( async (req, res) => {
     if( existedUser ){
         throw new ApiError(400, "User already exists")
     }
+    console.log("files ", req.files)
 
     const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    //const coverImageLocalPath = req.files?.coverImage[0]?.path;
+
+    let coverImageLocalPath;
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length>0){
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
 
     if( !avatarLocalPath  ){
         throw new ApiError(400, "Avatar are required")
@@ -67,7 +73,6 @@ const registerUser = asyncHandler( async (req, res) => {
 
 
 } )
-
 
 export {
     registerUser,
